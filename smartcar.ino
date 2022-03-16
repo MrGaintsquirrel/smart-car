@@ -1,23 +1,30 @@
 #include <Servo.h>
+#include "Motor.h"
 
 Servo servo1;
 
 //motor driver pwm pins
-#define PWM2A 11
-#define PWM2B 3
-#define PWM0A 6
-#define PWM0B 5
+#define PWM2A 11  //Left front
+#define PWM2B 3   //Left back
+#define PWM0A 6   //Right back
+#define PWM0B 5   //Right front
 
-//motor driver control pins
-#define M4A 0
-#define M2A 1
-#define M1A 2
-#define M1B 3
-#define M2B 4
-#define M3A 5
-#define M4B 6
-#define M3B 7
+//motor driver control pins from shiftregister
+#define M4A 0 //Right front forward
+#define M2A 1 //Left back forward
+#define M1A 2 //Left front forward
+#define M1B 3 //Left front backward
+#define M2B 4 //Left back backward
+#define M3A 5 //Right back forward
+#define M4B 6 //Right front backward
+#define M3B 7 //Right back backward
 
+motor motorRV (M4A, M4B, PWM0B, 0, 0);
+motor motorRA (M3B, M3A, PWM0A, 0, 0);
+motor motorLV (M1A, M1B, PWM2A, 52, 50);
+motor motorLA (M2A, M2B, PWM2B, 0, 0);
+
+/*
 #define RVD M4A
 #define RVR M4B
 
@@ -29,15 +36,14 @@ Servo servo1;
 
 #define LAD M2A
 #define LAR M2B
+*/
 
-//shift register
-#define DIR_CLK 4
-#define DIR_EN 7
-#define DIR_LATCH 12
-#define DIR_SER 8
 
 #define trigpin A0
 #define echo A1
+
+int pinIrBakken[] = {A5, A4, A3, A2};
+String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
 
 unsigned long deltatime = 0;
 
@@ -58,27 +64,45 @@ void setup() {
   digitalWrite(7, LOW);
   
   servo1.attach(10);
-
-  shiftwrite(LAD, 1);
-  analogWrite(PWM2A, 250);
   
-  shiftwrite(LVD, 1);
-  analogWrite(PWM2B, 250);
+/*
+  //shiftwrite(LAD, 1);
+  //analogWrite(PWM2A, 250);
+  
+  //shiftwrite(LVD, 1);
+  //analogWrite(PWM2B, 250);
 
-  shiftwrite(RVD, 1);
-  analogWrite(PWM0B, 250);
+  //shiftwrite(RVD, 1);
+  //analogWrite(PWM0B, 150);
 
-  shiftwrite(RAD, 1);
-  analogWrite(PWM0A,250);
-
+  //shiftwrite(RAD, 1);
+  //analogWrite(PWM0A,250);
+*/
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
+  motorRV.setSpeed(90, forward);
+  //motorRA.setSpeed(0, backwards);
+  //motorLV.setSpeed(0, backwards);
+  motorLA.setSpeed(90, forward);
+
+  /*for(int i = 0; i < 4; i++) {
+    Serial.print(sidesIrBakken[i]);
+    Serial.println(analogRead(pinIrBakken[i]));
+    
+  }
+
+  Serial.print("\t");
+  Serial.print(analogRead(pinIrBakken[3]));
+
+  Serial.print("\t");
+  Serial.println(analogRead(pinIrBakken[0]));
+  delay(100);
 
   
-    for(int i = 0; i < 180; i++){
-    servo1.write(i);
+   for(int i = 0; i < 180; i++){
+    //servo1.write(i);
     Serial.print(distance());
     Serial.println("Cm");
   }
@@ -86,7 +110,7 @@ void loop() {
     servo1.write(i);
     Serial.print(distance());
     Serial.println("Cm");
-  }
+  }*/
 }
 
 float distance() {
@@ -97,17 +121,3 @@ float distance() {
   deltatime = pulseIn(echo, HIGH);
   return deltatime * 0.034/2;
 }
-
-
-void shiftwrite(int pin, bool Value){
-
-  static uint8_t data = 0b00000000;
-
-  data |= Value << (pin);
-  Serial.println(data);
-
-  digitalWrite(DIR_LATCH, LOW);
-  shiftOut(DIR_SER, DIR_CLK, MSBFIRST, data);
-  digitalWrite(DIR_LATCH, HIGH);
-}
-
