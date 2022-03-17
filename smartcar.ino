@@ -1,5 +1,6 @@
 #include <Servo.h>
 #include "Motor.h"
+#include "Bakkensensor.h"
 
 Servo servo1;
 
@@ -81,11 +82,12 @@ void setup() {
 }
 
 void loop() {
+  Serial.println(Bakkensensor.gethighestsensor());
   // put your main code here, to run repeatedly:
-  motorRV.setSpeed(50, forward);
-  motorRA.setSpeed(50, forward);
-  motorLV.setSpeed(50, forward);
-  motorLA.setSpeed(50, forward);
+  //motorRV.setSpeed(50, forward);
+  //motorRA.setSpeed(50, forward);
+  //motorLV.setSpeed(50, forward);
+  //motorLA.setSpeed(50, forward);
 
   /*for(int i = 0; i < 4; i++) {
     Serial.print(sidesIrBakken[i]);
@@ -120,4 +122,5 @@ float distance() {
   digitalWrite(trigpin, LOW);
   deltatime = pulseIn(echo, HIGH);
   return deltatime * 0.034/2;
+  
 }
