@@ -1,7 +1,7 @@
 #include "Bakkensensor.h"
 
 
-int Bakkensensor::gethighestsensor(){
+int bakkensensor::gethighestsensor(){
     int max = 0;
     int max_id = 0;
     
