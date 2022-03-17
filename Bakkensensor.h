@@ -1,6 +1,6 @@
 #include <arduino.h>
   
-class Bakkensensor {
+class bakkensensor {
   public:
   
   int gethighestsensor(); //Returns the sensor id with the highest value
