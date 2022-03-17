@@ -18,22 +18,18 @@ void motor::setSpeed(int speedPercentage, Direction direction){
     case forward:
      motorShield.writeShiftRegisterPin(_backwardsPin, 0);
      motorShield.writeShiftRegisterPin(_forwardPin, 1);
-     if(pwmValue <! _speedOffsetforward){
-      pwmValue = pwmValue - _speedOffsetforward;
-     }
+     pwmValue = pwmValue - _speedOffsetforward;
      break;
 
     case backwards:
       motorShield.writeShiftRegisterPin(_forwardPin, 0);
       motorShield.writeShiftRegisterPin(_backwardsPin, 1);
-      if(pwmValue <! _speedOffsetbackwards){
-        pwmValue = pwmValue - _speedOffsetbackwards;
-      }
+      pwmValue = pwmValue - _speedOffsetbackwards;
       break;
   }
   analogWrite(_speedControlPin, pwmValue);
 }
 
 void motor::Stop(){
-   setSpeed(0, forward);
+   analogWrite(_speedControlPin, 0);
 }
