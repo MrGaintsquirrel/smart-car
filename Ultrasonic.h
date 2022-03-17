@@ -3,8 +3,8 @@
 class ultrasonic {
   public:
 
-  ultrasonic(int trigPin, int echoPin);
-  float getDistance();
+  ultrasonic(int trigPin, int echoPin); // Sets trigger and echo pin
+  float getDistance(); // Retruns distance measured
 
 
   private:

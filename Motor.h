@@ -10,12 +10,12 @@ class motor {
   
   public:
   
-  motor(int forwardPin, int backwardsPin, int speedControlPin, int speedOffsetforward, int speedOffsetbackwards);
-  void setSpeed(int speedPercentage, Direction direction);
-  void Stop();
+  motor(int forwardPin, int backwardsPin, int speedControlPin, int speedOffsetforward, int speedOffsetbackwards); // gives basic parameters to motor object
+  void setSpeed(int speedPercentage, Direction direction); // Set motor speed and direction
+  void Stop(); // brake
 
   private:
-  int _forwardPin, _backwardsPin, _speedControlPin, _speedOffsetforward, _speedOffsetbackwards;
+  int _forwardPin, _backwardsPin, _speedControlPin, _speedOffsetforward, _speedOffsetbackwards; // Internal variables
 
   motorShield motorShield;
   
