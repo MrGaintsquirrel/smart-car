@@ -4,6 +4,8 @@
 
 Servo servo1;
 
+Bakkensensor Bakkensensor;
+
 //motor driver pwm pins
 #define PWM2A 11  //Left front
 #define PWM2B 3   //Left back
@@ -43,8 +45,8 @@ motor motorLA (M2A, M2B, PWM2B, 0, 0);
 #define trigpin A0
 #define echo A1
 
-int pinIrBakken[] = {A5, A4, A3, A2};
-String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
+//int pinIrBakken[] = {A5, A4, A3, A2};
+//String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
 
 unsigned long deltatime = 0;
 
@@ -83,6 +85,7 @@ void setup() {
 
 void loop() {
   Serial.println(Bakkensensor.gethighestsensor());
+  delay(100);
   // put your main code here, to run repeatedly:
   //motorRV.setSpeed(50, forward);
   //motorRA.setSpeed(50, forward);
