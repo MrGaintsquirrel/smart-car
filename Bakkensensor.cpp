@@ -1,13 +1,14 @@
 #include "Bakkensensor.h"
-      
-Bakkensensor(){
-    int max = int_min;
-    int max_i = 0;
 
+int Bakkensensor::gethighestsensor(){
+    int max = 0;
+    int max_i = 0;
+    
       for(int i = 0; i < 4; i++) {
         if( pinIrBakken[i] > max){
           max = pinIrBakken[i];
-          Max_i = i;
+          max_i = i;
         }
       }
+      return max_i;
 }
