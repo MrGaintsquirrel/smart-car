@@ -1,8 +1,9 @@
 #include <Servo.h>
-#include "Motor.h"
+#include "car.h"
 
 Servo servo1;
-
+car smartcar;
+/*
 //motor driver pwm pins
 #define PWM2A 11  //Left front
 #define PWM2B 3   //Left back
@@ -19,10 +20,10 @@ Servo servo1;
 #define M4B 6 //Right front backward
 #define M3B 7 //Right back backward
 
-motor motorRV (M4A, M4B, PWM0B, 0, 0);
-motor motorRA (M3B, M3A, PWM0A, 0, 0);
-motor motorLV (M1A, M1B, PWM2A, 52, 50);
-motor motorLA (M2A, M2B, PWM2B, 0, 0);
+//motor motorRV (M4A, M4B, PWM0B, 0, 0);
+//motor motorRA (M3B, M3A, PWM0A, 0, 0);
+//motor motorLV (M1A, M1B, PWM2A, 25, 0);
+//motor motorLA (M2A, M2B, PWM2B, 0, 0);*/
 
 /*
 #define RVD M4A
@@ -82,12 +83,14 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  motorRV.setSpeed(90, forward);
-  //motorRA.setSpeed(0, backwards);
-  //motorLV.setSpeed(0, backwards);
-  motorLA.setSpeed(90, forward);
+  smartcar.driveforward(50);
+  /*
+  motorRV.setSpeed(50, forward);
+  motorRA.setSpeed(50, forward);
+  motorLV.setSpeed(50, forward);
+  motorLA.setSpeed(50, forward);
 
-  /*for(int i = 0; i < 4; i++) {
+  for(int i = 0; i < 4; i++) {
     Serial.print(sidesIrBakken[i]);
     Serial.println(analogRead(pinIrBakken[i]));
     
