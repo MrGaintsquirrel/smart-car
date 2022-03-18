@@ -36,4 +36,15 @@ void car::Stop(){
   motorLV.Stop();
   motorLA.Stop();
 }
-
+void car::driveturnright(int Speed) {
+  motorRV.setSpeed(Speed, backwards);
+  motorRA.setSpeed(Speed, backwards);
+  motorLV.setSpeed(Speed, forward);
+  motorLA.setSpeed(Speed, forward);
+}
+void car::driveturnleft(int Speed) {
+  motorRV.setSpeed(Speed, forward);
+  motorRA.setSpeed(Speed, forward);
+  motorLV.setSpeed(Speed, backwards);
+  motorLA.setSpeed(Speed, backwards);
+}
