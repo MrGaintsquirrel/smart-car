@@ -27,7 +27,8 @@ class car {
   void driveright(int Speed);
   void driveleft(int Speed);
   void Stop();
-
+  void driveturnright(int Speed);
+  void driveturnleft(int Speed);
   private:
 
 
