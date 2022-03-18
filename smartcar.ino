@@ -1,14 +1,16 @@
 #include <Servo.h>
 
-#include "Motor.h"
+//#include "Motor.h"
 #include "Bakkensensor.h"
 #include "Ultrasonic.h"
+#include "car.h"
 
 Servo servo1;
 
 bakkensensor Bakkensensor;
 
 ultrasonic ultrasonic(A0, A1, 10);
+car smartcar;
 
 //motor driver pwm pins
 #define PWM2A 11  //Left front
@@ -26,13 +28,13 @@ ultrasonic ultrasonic(A0, A1, 10);
 #define M4B 6 //Right front backward
 #define M3B 7 //Right back backward
 
-
+/*
 motor motorRV (M4A, M4B, PWM0B, 0, 0);
 motor motorRA (M3B, M3A, PWM0A, 0, 0);
 motor motorLV (M1A, M1B, PWM2A, 50, 0);
 motor motorLA (M2A, M2B, PWM2B, 0, 0);
 
-
+*/
 /*
 #define RVD M4A
 #define RVR M4B
@@ -72,33 +74,24 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(ultrasonic.getDistance());
-  
-  //ultrasonic.setAngle(90);
-  if(ultrasonic.getDistance() > 20) {
-    motorRV.setSpeed(50, forward);
-    motorRA.setSpeed(50, forward);
-    motorLV.setSpeed(50, forward);
-    motorLA.setSpeed(50, forward);
-  } else {
-    motorRV.Stop();
-    motorRA.Stop();
-    motorLV.Stop();
-    motorLA.Stop();
-  }
+  //Serial.println(ultrasonic.getDistance());
+
   // put your main code here, to run repeatedly:
 
-  //smartcar.driveforward(50);
-  //delay(5000);
+  smartcar.driveforward(50);
+  delay(5000);
   smartcar.drivebackward(50);
   delay(5000);
-  smartcar.Stop();
-  smartcar.driveright(50);
-  delay(5000);
-  smartcar.Stop();
   smartcar.driveleft(50);
   delay(5000);
+  smartcar.driveright(50);
+  delay(5000);
   
+  
+/*  smartcar.driveleft(50);
+  delay(1000);
+  smartcar.Stop();*/
+}
   /*
   motorRV.setSpeed(50, forward);
   motorRA.setSpeed(50, forward);
@@ -129,4 +122,4 @@ void loop() {
     Serial.print(distance());
     Serial.println("Cm");
   }*/
-}
+

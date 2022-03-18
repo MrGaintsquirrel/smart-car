@@ -32,4 +32,6 @@ void motor::setSpeed(int speedPercentage, Direction direction){
 
 void motor::Stop(){
    analogWrite(_speedControlPin, 0);
+   ////motorShield.writeShiftRegisterPin(_forwardPin, 0);
+  // motorShield.writeShiftRegisterPin(_backwardsPin, 0);
 }
