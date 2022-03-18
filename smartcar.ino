@@ -83,7 +83,17 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  smartcar.driveforward(50);
+  //smartcar.driveforward(50);
+  //delay(5000);
+  smartcar.drivebackward(50);
+  delay(5000);
+  smartcar.Stop();
+  smartcar.driveright(50);
+  delay(5000);
+  smartcar.Stop();
+  smartcar.driveleft(50);
+  delay(5000);
+  
   /*
   motorRV.setSpeed(50, forward);
   motorRA.setSpeed(50, forward);

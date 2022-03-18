@@ -23,6 +23,10 @@ class car {
   public:
 
   void driveforward(int Speed);
+  void drivebackward(int Speed);
+  void driveright(int Speed);
+  void driveleft(int Speed);
+  void Stop();
 
   private:
 
