@@ -2,6 +2,8 @@
 #include <Servo.h>
 
 class ultrasonic {
+ 
+  
   public:
 
   ultrasonic(int trigPin, int echoPin, int servoPin); // Sets trigger and echo pin

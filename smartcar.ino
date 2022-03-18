@@ -1,4 +1,5 @@
 #include <Servo.h>
+
 #include "Motor.h"
 #include "Bakkensensor.h"
 #include "Ultrasonic.h"
@@ -25,10 +26,12 @@ ultrasonic ultrasonic(A0, A1, 10);
 #define M4B 6 //Right front backward
 #define M3B 7 //Right back backward
 
+
 motor motorRV (M4A, M4B, PWM0B, 0, 0);
 motor motorRA (M3B, M3A, PWM0A, 0, 0);
 motor motorLV (M1A, M1B, PWM2A, 50, 0);
 motor motorLA (M2A, M2B, PWM2B, 0, 0);
+
 
 /*
 #define RVD M4A
@@ -85,7 +88,24 @@ void loop() {
   }
   // put your main code here, to run repeatedly:
 
-  /*for(int i = 0; i < 4; i++) {
+  //smartcar.driveforward(50);
+  //delay(5000);
+  smartcar.drivebackward(50);
+  delay(5000);
+  smartcar.Stop();
+  smartcar.driveright(50);
+  delay(5000);
+  smartcar.Stop();
+  smartcar.driveleft(50);
+  delay(5000);
+  
+  /*
+  motorRV.setSpeed(50, forward);
+  motorRA.setSpeed(50, forward);
+  motorLV.setSpeed(50, forward);
+  motorLA.setSpeed(50, forward);
+
+  for(int i = 0; i < 4; i++) {
     Serial.print(sidesIrBakken[i]);
     Serial.println(analogRead(pinIrBakken[i]));
     
