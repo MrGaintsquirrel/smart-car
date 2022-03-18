@@ -12,3 +12,21 @@ void car::driveforward(int Speed) {
   motorLV.setSpeed(Speed, forward);
   motorLA.setSpeed(Speed, forward);
 }
+void car::drivebackward(int Speed) {
+  motorRV.setSpeed(Speed, backwards);
+  motorRA.setSpeed(Speed, backwards);
+  motorLV.setSpeed(Speed, backwards);
+  motorLA.setSpeed(Speed, backwards);
+}
+void car::driveright(int Speed) {
+  motorRV.setSpeed(Speed, backwards);
+  motorRA.setSpeed(Speed, forward);
+  motorLV.setSpeed(Speed, forward);
+  motorLA.setSpeed(Speed, backwards);
+}
+void car::driveleft(int Speed) {
+  motorRV.setSpeed(Speed, forward);
+  motorRA.setSpeed(Speed, backwards);
+  motorLV.setSpeed(Speed, backwards);
+  motorLA.setSpeed(Speed, forward);
+}
