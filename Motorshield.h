@@ -9,7 +9,7 @@ class motorShield {
   
   public:
   
-  void writeShiftRegisterPin(int pin, bool value);
+  void writeShiftRegisterPin(int pin, bool value); // Sets specified pin to 1 or 0
 
   private:
 

@@ -1,9 +1,15 @@
 #include <Servo.h>
-#include "car.h"
+
+#include "Motor.h"
+#include "Bakkensensor.h"
+#include "Ultrasonic.h"
 
 Servo servo1;
-car smartcar;
-/*
+
+bakkensensor Bakkensensor;
+
+ultrasonic ultrasonic(A0, A1, 10);
+
 //motor driver pwm pins
 #define PWM2A 11  //Left front
 #define PWM2B 3   //Left back
@@ -20,10 +26,12 @@ car smartcar;
 #define M4B 6 //Right front backward
 #define M3B 7 //Right back backward
 
-//motor motorRV (M4A, M4B, PWM0B, 0, 0);
-//motor motorRA (M3B, M3A, PWM0A, 0, 0);
-//motor motorLV (M1A, M1B, PWM2A, 25, 0);
-//motor motorLA (M2A, M2B, PWM2B, 0, 0);*/
+
+motor motorRV (M4A, M4B, PWM0B, 0, 0);
+motor motorRA (M3B, M3A, PWM0A, 0, 0);
+motor motorLV (M1A, M1B, PWM2A, 50, 0);
+motor motorLA (M2A, M2B, PWM2B, 0, 0);
+
 
 /*
 #define RVD M4A
@@ -43,8 +51,8 @@ car smartcar;
 #define trigpin A0
 #define echo A1
 
-int pinIrBakken[] = {A5, A4, A3, A2};
-String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
+//int pinIrBakken[] = {A5, A4, A3, A2};
+//String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
 
 unsigned long deltatime = 0;
 
@@ -53,9 +61,7 @@ void setup() {
   // put your setup code here, to run once:
   
   Serial.begin(9600);
-  
-  pinMode(trigpin, OUTPUT);
-  pinMode(echo, INPUT);
+  ultrasonic.init();
 
   pinMode(DIR_CLK, OUTPUT);
   pinMode(DIR_LATCH, OUTPUT);
@@ -63,26 +69,25 @@ void setup() {
   pinMode(7, OUTPUT);
 
   digitalWrite(7, LOW);
-  
-  servo1.attach(10);
-  
-/*
-  //shiftwrite(LAD, 1);
-  //analogWrite(PWM2A, 250);
-  
-  //shiftwrite(LVD, 1);
-  //analogWrite(PWM2B, 250);
-
-  //shiftwrite(RVD, 1);
-  //analogWrite(PWM0B, 150);
-
-  //shiftwrite(RAD, 1);
-  //analogWrite(PWM0A,250);
-*/
 }
 
 void loop() {
+  Serial.println(ultrasonic.getDistance());
+  
+  //ultrasonic.setAngle(90);
+  if(ultrasonic.getDistance() > 20) {
+    motorRV.setSpeed(50, forward);
+    motorRA.setSpeed(50, forward);
+    motorLV.setSpeed(50, forward);
+    motorLA.setSpeed(50, forward);
+  } else {
+    motorRV.Stop();
+    motorRA.Stop();
+    motorLV.Stop();
+    motorLA.Stop();
+  }
   // put your main code here, to run repeatedly:
+
   //smartcar.driveforward(50);
   //delay(5000);
   smartcar.drivebackward(50);
@@ -124,13 +129,4 @@ void loop() {
     Serial.print(distance());
     Serial.println("Cm");
   }*/
-}
-
-float distance() {
-  deltatime = 0;
-  digitalWrite(trigpin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigpin, LOW);
-  deltatime = pulseIn(echo, HIGH);
-  return deltatime * 0.034/2;
 }
