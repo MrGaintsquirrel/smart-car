@@ -2,7 +2,7 @@
 
 motor motorRV(M4A, M4B, PWM0B, 0, 0);
 motor motorRA(M3B, M3A, PWM0A, 0, 0);
-motor motorLV(M1A, M1B, PWM2A, 50, 0);
+motor motorLV(M1A, M1B, PWM2A, 25, 0);
 motor motorLA(M2A, M2B, PWM2B, 0, 0);
 
 
