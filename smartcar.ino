@@ -17,8 +17,6 @@ enum state {
   found = 1,
 } _State;
 
-int Stopflag = 0;
-
 void setup() {
   // put your setup code here, to run once:
   
@@ -47,18 +45,14 @@ void loop() {
   }
 
   if(sensorid == 0){ // Drive forwards if the target is in front
-     _State = found;
-     if(Stopflag == 0){
-      smartcar.driveforward(50);
-     }
-     if(Time - previousTime >= 2000 && _State == found){
-      Stopflag = 1;
+     if(_State == found) {
       smartcar.Stop();
+     } else {
+      smartcar.driveforward(50);
+      delay(1000);
      }
-   } else{
-    _State = searching;
+      _State = found;
    }
-   
    if(_State == searching && Time - previousTime <= 2000) {
      smartcar.driveturnright(40);
    }
