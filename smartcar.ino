@@ -1,61 +1,13 @@
-#include <Servo.h>
-
-#include "Motor.h"
 #include "Bakkensensor.h"
 #include "Ultrasonic.h"
+#include "car.h"
 
-Servo servo1;
 
 bakkensensor Bakkensensor;
 
 ultrasonic ultrasonic(A0, A1, 10);
 
-//motor driver pwm pins
-#define PWM2A 11  //Left front
-#define PWM2B 3   //Left back
-#define PWM0A 6   //Right back
-#define PWM0B 5   //Right front
-
-//motor driver control pins from shiftregister
-#define M4A 0 //Right front forward
-#define M2A 1 //Left back forward
-#define M1A 2 //Left front forward
-#define M1B 3 //Left front backward
-#define M2B 4 //Left back backward
-#define M3A 5 //Right back forward
-#define M4B 6 //Right front backward
-#define M3B 7 //Right back backward
-
-
-motor motorRV (M4A, M4B, PWM0B, 0, 0);
-motor motorRA (M3B, M3A, PWM0A, 0, 0);
-motor motorLV (M1A, M1B, PWM2A, 50, 0);
-motor motorLA (M2A, M2B, PWM2B, 0, 0);
-
-
-/*
-#define RVD M4A
-#define RVR M4B
-
-#define RAD M3B
-#define RAR M3A
-
-#define LVD M1A
-#define LVR M1B
-
-#define LAD M2A
-#define LAR M2B
-*/
-
-
-#define trigpin A0
-#define echo A1
-
-//int pinIrBakken[] = {A5, A4, A3, A2};
-//String sidesIrBakken[] = {"voor: ", "links: ", "achter: ", "rechts: "};
-
-unsigned long deltatime = 0;
-
+car smartcar;
 
 void setup() {
   // put your setup code here, to run once:
@@ -72,33 +24,27 @@ void setup() {
 }
 
 void loop() {
-  Serial.println(ultrasonic.getDistance());
-  
-  //ultrasonic.setAngle(90);
-  if(ultrasonic.getDistance() > 20) {
-    motorRV.setSpeed(50, forward);
-    motorRA.setSpeed(50, forward);
-    motorLV.setSpeed(50, forward);
-    motorLA.setSpeed(50, forward);
-  } else {
-    motorRV.Stop();
-    motorRA.Stop();
-    motorLV.Stop();
-    motorLA.Stop();
-  }
   // put your main code here, to run repeatedly:
+  Serial.println(ultrasonic.getDistance());
 
-  //smartcar.driveforward(50);
-  //delay(5000);
+  smartcar.driveforward(50);
+  delay(5000);
   smartcar.drivebackward(50);
   delay(5000);
-  smartcar.Stop();
-  smartcar.driveright(50);
-  delay(5000);
-  smartcar.Stop();
   smartcar.driveleft(50);
   delay(5000);
+  smartcar.driveright(50);
+  delay(5000);
+  smartcar.driveturnright(50);
+  delay(5000);
+  smartcar.driveturnleft(50);
+  delay(5000);
   
+  
+/*  smartcar.driveleft(50);
+  delay(1000);
+  smartcar.Stop();*/
+}
   /*
   motorRV.setSpeed(50, forward);
   motorRA.setSpeed(50, forward);
@@ -129,4 +75,3 @@ void loop() {
     Serial.print(distance());
     Serial.println("Cm");
   }*/
-}
