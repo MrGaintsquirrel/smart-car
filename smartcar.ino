@@ -40,38 +40,4 @@ void loop() {
   smartcar.driveturnleft(50);
   delay(5000);
   
-  
-/*  smartcar.driveleft(50);
-  delay(1000);
-  smartcar.Stop();*/
 }
-  /*
-  motorRV.setSpeed(50, forward);
-  motorRA.setSpeed(50, forward);
-  motorLV.setSpeed(50, forward);
-  motorLA.setSpeed(50, forward);
-
-  for(int i = 0; i < 4; i++) {
-    Serial.print(sidesIrBakken[i]);
-    Serial.println(analogRead(pinIrBakken[i]));
-    
-  }
-
-  Serial.print("\t");
-  Serial.print(analogRead(pinIrBakken[3]));
-
-  Serial.print("\t");
-  Serial.println(analogRead(pinIrBakken[0]));
-  delay(100);
-
-  
-   for(int i = 0; i < 180; i++){
-    //servo1.write(i);
-    Serial.print(distance());
-    Serial.println("Cm");
-  }
-  for(int i = 180; i > 0; i--){
-    servo1.write(i);
-    Serial.print(distance());
-    Serial.println("Cm");
-  }*/
