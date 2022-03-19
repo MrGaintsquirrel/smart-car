@@ -13,3 +13,7 @@ int bakkensensor::gethighestsensor(){
       }
       return max_id;
 }
+
+int bakkensensor::getSensorValue(int sensorId) {
+  return analogRead(pinIrBakken[sensorId]);
+}
