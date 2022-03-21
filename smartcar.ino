@@ -44,21 +44,24 @@ void loop() {
   if(Time - previousTime >= 50){
     Direction = Bakkensensor.gethighestsensor();
 
-    if(Bakkensensor.getSensorValue(Direction) == 900) Direction = 5;
+    Serial.println(Bakkensensor.getSensorValue(0));
+
+    if(ultrasonic.getDistance() <= 10) Direction = 5;
 
     switch(Direction) {
     case 0:
       smartcar.driveforward(50);
     break;
     case 1:
-      smartcar.driveleft(50);
+      //smartcar.driveleft(50);
+      smartcar.driveturnleft(50);
     break;
     case 2:
       //smartcar.drivebackward(30);
-      smartcar.driveturnleft(60);
+      smartcar.driveturnleft(50);
     break;
     case 3:
-      smartcar.driveright(50);
+      smartcar.driveturnright(50);
     break;
 
     default:
