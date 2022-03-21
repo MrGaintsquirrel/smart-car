@@ -9,6 +9,8 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
+int Direction = 0;
+
 unsigned long Time = 0;
 unsigned long previousTime = 0;
 
@@ -38,13 +40,48 @@ void loop() {
   Time = millis();
   int sensorid = 5;
 
+  
   if(Time - previousTime >= 50){
-    if(Bakkensensor.getSensorValue(Bakkensensor.gethighestsensor()) > 15) { // Check if sensor is above threshold to make sure it is the target
+    Direction = Bakkensensor.gethighestsensor();
+
+    if(Bakkensensor.getSensorValue(Direction) == 900) Direction = 5;
+
+    switch(Direction) {
+    case 0:
+      smartcar.driveforward(50);
+    break;
+    case 1:
+      smartcar.driveleft(50);
+    break;
+    case 2:
+      //smartcar.drivebackward(30);
+      smartcar.driveturnleft(60);
+    break;
+    case 3:
+      smartcar.driveright(50);
+    break;
+
+    default:
+      smartcar.Stop();
+    break;
+  };
+  }
+
+
+
+  
+/*
+  Time = millis();
+  int sensorid = 5;
+
+  if(Time - previousTime >= 50){
+    if(Bakkensensor.getSensorValue(Bakkensensor.gethighestsensor()) > 110) { // Check if sensor is above threshold to make sure it is the target
       sensorid = Bakkensensor.gethighestsensor();
+      Serial.println(Bakkensensor.getSensorValue(sensorid));
     }
   }
 
-  if(sensorid == 0){ // Drive forwards if the target is in front
+  if(sensorid == 0 || _State == found){ // Drive forwards if the target is in front
      if(_State == found) {
       smartcar.Stop();
      } else {
@@ -53,10 +90,10 @@ void loop() {
      }
       _State = found;
    }
-   if(_State == searching && Time - previousTime <= 2000) {
+   if(_State == searching && Time - previousTime <= 2500) {
      smartcar.driveturnright(40);
    }
-   if(_State == searching && Time - previousTime >= 2000) {
+   if(_State == searching && Time - previousTime >= 2500) {
       smartcar.driveleft(50);
       if(Time - previousTime >= 4000){
         previousTime = Time;
