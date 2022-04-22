@@ -19,7 +19,7 @@ typedef struct commandstruct{
   void (*function)();
 };
 
-struct commandstruct command[5];
+struct commandstruct command[7];
 
 void driveforward(){
   smartcar.driveforward(50);
@@ -41,6 +41,13 @@ void Stop(){
   smartcar.Stop();
 }
 
+void Turnleft(){
+  smartcar.driveturnleft(50);
+}
+
+void Turnright(){
+  smartcar.driveturnright(50);
+}
 
 
 void setup() {
@@ -60,7 +67,7 @@ void setup() {
   command[0].commandName = 'F';
   command[0].function = &driveforward;
 
-  command[1].commandName = 'L';
+  command[1].commandName = 'A';
   command[1].function = &driveleft;
 
   command[2].commandName = 'R';
@@ -69,8 +76,14 @@ void setup() {
   command[3].commandName = 'B';
   command[3].function = &drivebackward;
 
-  command[4].commandName = 'S';
-  command[5].function = &Stop;
+  command[4].commandName = 'C';
+  command[4].function = &Stop;
+
+  command[5].commandName = 'E';
+  command[5].function = &Turnleft;
+
+  command[6].commandName = 'D';
+  command[6].function = &Turnright;
 
 }
 
@@ -123,15 +136,14 @@ void loop() {
 }
 
 void SerialHandler() {
-  char receive[2];
+  int receive;
   
-  Serial.readBytes(receive, 1);
-  //receive[1] = '\0';
+  receive = Serial.read();
 
-  Serial.println(receive);
-
-  for(int i = 0; i <= 4; i++){
-    if(strcmp(receive, command[i].commandName) == 0){
+  Serial.println((char)receive);
+  
+  for(int i = 0; i <= 6; i++){
+    if(strcmp((char)receive, command[i].commandName) == 0){
       (*command[i].function)();
       //break;
     }
