@@ -14,10 +14,41 @@ int Direction = 0;
 unsigned long Time = 0;
 unsigned long previousTime = 0;
 
-enum state {
-  searching = 0,
-  found = 1,
-} _State;
+typedef struct commandstruct{
+  char commandName;
+  void (*function)();
+};
+
+struct commandstruct command[7];
+
+void driveforward(){
+  smartcar.driveforward(50);
+}
+
+void driveleft(){
+  smartcar.driveleft(50);
+}
+
+void driveright(){
+  smartcar.driveright(50);
+}
+
+void drivebackward(){
+  smartcar.drivebackward(50);
+}
+
+void Stop(){
+  smartcar.Stop();
+}
+
+void Turnleft(){
+  smartcar.driveturnleft(50);
+}
+
+void Turnright(){
+  smartcar.driveturnright(50);
+}
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -31,21 +62,54 @@ void setup() {
   pinMode(7, OUTPUT);
 
   digitalWrite(7, LOW);
+  //smartcar.driveforward(50);
+
+  command[0].commandName = 'F';
+  command[0].function = &driveforward;
+
+  command[1].commandName = 'A';
+  command[1].function = &driveleft;
+
+  command[2].commandName = 'R';
+  command[2].function = &driveright;
+
+  command[3].commandName = 'B';
+  command[3].function = &drivebackward;
+
+  command[4].commandName = 'C';
+  command[4].function = &Stop;
+
+  command[5].commandName = 'E';
+  command[5].function = &Turnleft;
+
+  command[6].commandName = 'D';
+  command[6].function = &Turnright;
+
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   //Serial.println(ultrasonic.getDistance());
+  if(Serial.available() > 0){
+    SerialHandler();
+    //char receive = Serial.read();
+    //Serial.println(receive);
+  }
 
   Time = millis();
   int sensorid = 5;
-
   
-  if(Time - previousTime >= 50){
+
+  if(ultrasonic.getDistance() <= 10){
+    smartcar.Stop();
+  }
+  
+  if(Time - previousTime >= 150){
     Direction = Bakkensensor.gethighestsensor();
+    //Serial.println(ultrasonic.getDistance());
 
-    Serial.println(Bakkensensor.getSensorValue(0));
-
+    //Serial.println(Bakkensensor.getSensorValue(0));
+/*
     if(ultrasonic.getDistance() <= 10) Direction = 5;
 
     switch(Direction) {
@@ -67,54 +131,22 @@ void loop() {
     default:
       smartcar.Stop();
     break;
-  };
+  };*/
   }
-
-
-
-  
-/*
-  Time = millis();
-  int sensorid = 5;
-
-  if(Time - previousTime >= 50){
-    if(Bakkensensor.getSensorValue(Bakkensensor.gethighestsensor()) > 110) { // Check if sensor is above threshold to make sure it is the target
-      sensorid = Bakkensensor.gethighestsensor();
-      Serial.println(Bakkensensor.getSensorValue(sensorid));
-    }
-  }
-
-  if(sensorid == 0 || _State == found){ // Drive forwards if the target is in front
-     if(_State == found) {
-      smartcar.Stop();
-     } else {
-      smartcar.driveforward(50);
-      delay(1000);
-     }
-      _State = found;
-   }
-   if(_State == searching && Time - previousTime <= 2500) {
-     smartcar.driveturnright(40);
-   }
-   if(_State == searching && Time - previousTime >= 2500) {
-      smartcar.driveleft(50);
-      if(Time - previousTime >= 4000){
-        previousTime = Time;
-    }
-   }
-
-/*
-  smartcar.driveforward(50);
-  delay(5000);
-  smartcar.drivebackward(50);
-  delay(5000);
-  smartcar.driveleft(50);
-  delay(5000);
-  smartcar.driveright(50);
-  delay(5000);
-  smartcar.driveturnright(50);
-  delay(5000);
-  smartcar.driveturnleft(50);
-  delay(5000);
-  */
 }
+
+void SerialHandler() {
+  int receive;
+  
+  receive = Serial.read();
+
+  Serial.println((char)receive);
+  
+  for(int i = 0; i <= 6; i++){
+    if(strcmp((char)receive, command[i].commandName) == 0){
+      (*command[i].function)();
+      //break;
+    }
+  }
+}
+
