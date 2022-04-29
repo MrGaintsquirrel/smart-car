@@ -102,6 +102,7 @@ void loop() {
 
   if(ultrasonic.getDistance() <= 10){
     smartcar.Stop();
+    sensorid = getClearside();
   }
   
   if(Time - previousTime >= 150){
@@ -109,29 +110,27 @@ void loop() {
     //Serial.println(ultrasonic.getDistance());
 
     //Serial.println(Bakkensensor.getSensorValue(0));
-/*
-    if(ultrasonic.getDistance() <= 10) Direction = 5;
 
     switch(Direction) {
     case 0:
-      smartcar.driveforward(50);
+      smartcar.driveforward(30);
     break;
     case 1:
       //smartcar.driveleft(50);
-      smartcar.driveturnleft(50);
+      smartcar.driveturnleft(30);
     break;
     case 2:
       //smartcar.drivebackward(30);
-      smartcar.driveturnleft(50);
+      smartcar.driveturnleft(30);
     break;
     case 3:
-      smartcar.driveturnright(50);
+      smartcar.driveturnright(30);
     break;
 
     default:
       smartcar.Stop();
     break;
-  };*/
+  };
   }
 }
 
@@ -147,6 +146,22 @@ void SerialHandler() {
       (*command[i].function)();
       //break;
     }
+  }
+}
+
+int getClearside(){
+  int angles[] = {0, 180};
+  int distance[2] = 0;
+  
+  for(int i = 0; i < 2; i++){
+    ultrasonic.setAngle(angles[i]);
+    distance[i] = ultrasonic.getDistance();
+  }
+  if(distance[0] > distance[1]){
+    return 2;
+  }
+  else {
+    return 3;
   }
 }
 
