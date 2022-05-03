@@ -12,7 +12,10 @@ car smartcar;
 int irPinLeft = 13;
 int irPinRight = 9;
 
+int ultrasoonflag = 0;
+
 int Direction = 0;
+int prioritylist[4] = {0};
 
 unsigned long Time = 0;
 unsigned long previousTime = 0;
@@ -90,7 +93,6 @@ void setup() {
 
   command[6].commandName = 'D';
   command[6].function = &Turnright;
-
 }
 
 void loop() {
@@ -103,35 +105,41 @@ void loop() {
   if(Serial.available() > 0){
     SerialHandler();
   }
-
-  int sensorid = 5;
-  
   //check if distance is less than 10 cm
-  if(ultrasonic.getDistance() <= 10){
-    smartcar.Stop();
-    sensorid = getClearside();
+   if(ultrasonic.getDistance() <= 10 && ultrasoonflag != 1){
+      smartcar.Stop();
+      prioritylist[0] = getClearside();
+      ultrasoonflag = 1;
+  } else {
+    prioritylist[0] = 6;
   }
 
   //update dricetion ecery 150ms
   if(Time - previousTime >= 150){
-    Direction = Bakkensensor.gethighestsensor();
-    //Serial.println(ultrasonic.getDistance());
-    //Serial.println(Bakkensensor.getSensorValue(0));
+    prioritylist[1] = Bakkensensor.gethighestsensor();
+
+    if(prioritylist[0] == 6) {
+      Direction = prioritylist[1];
+    } else {
+      Direction = prioritylist[0];
+    }
+    
+
     //change direction based on sensors
     switch(Direction) {
        case 0:
-         smartcar.driveforward(30);
+         smartcar.driveforward(50);
       break;
       case 1:
         //smartcar.driveleft(50);
-        smartcar.driveturnleft(30);
+        smartcar.driveturnleft(50);
       break;
       case 2:
         //smartcar.drivebackward(30);
-        smartcar.driveturnleft(30);
+        smartcar.driveturnleft(50);
       break;
       case 3:
-        smartcar.driveturnright(30);
+        smartcar.driveturnright(50);
       break;
 
       default:
@@ -157,18 +165,20 @@ void SerialHandler() {
 }
 
 int getClearside(){
-  int angles[] = {0, 180};
-  int distance[2] = 0;
+  int angles[] = {10, 180};
+  int distance[2] = {0, 0};
   
   for(int i = 0; i < 2; i++){
     ultrasonic.setAngle(angles[i]);
-    distance[i] = ultrasonic.getDistance();
+    delay(500);
+    distance[i] = ultrasonic.getDistance(); 
   }
+  ultrasonic.setAngle(90);
   if(distance[0] > distance[1]){
-    return 2;
+    return 3;
   }
   else {
-    return 3;
+    return 2;
   }
 }
 
