@@ -26,8 +26,6 @@ unsigned long previousTimeDrive = 0;
 
 unsigned long previousTimeUltrasoon = 0;
 
-unsigned long previousTime = 0;
-
 typedef struct commandstruct{
   char commandName;
   void (*function)();
