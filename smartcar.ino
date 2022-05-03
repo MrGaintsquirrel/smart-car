@@ -9,10 +9,12 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
+int Speed = 45;
+
 int irPinLeft = 13;
 int irPinRight = 9;
 
-int ultrasoonflag = 0;
+bool ultrasoonflag = 0;
 
 int Direction = 0;
 int prioritylist[4] = {0};
@@ -100,52 +102,70 @@ void loop() {
   //Serial.println(ultrasonic.getDistance());
 
   Time = millis();
+
+  
   
   //check for serial commands
   if(Serial.available() > 0){
     SerialHandler();
   }
   //check if distance is less than 10 cm
-   if(ultrasonic.getDistance() <= 10 && ultrasoonflag != 1){
+   if(ultrasonic.getDistance() <= 15 && ultrasoonflag == 0){
       smartcar.Stop();
       prioritylist[0] = getClearside();
       ultrasoonflag = 1;
-  } else {
-    prioritylist[0] = 6;
+  } if(ultrasoonflag == 1 && Time - previousTime >= 2000) {
+     prioritylist[0] = 6;
   }
 
-  //update dricetion ecery 150ms
+  if(getDigitalsensors() > 0) {
+    prioritylist[1] = 6;
+  } else {
+    prioritylist[1] = 0;
+  }
+  
+
+
+  //update dricetion every 150ms
   if(Time - previousTime >= 150){
-    prioritylist[1] = Bakkensensor.gethighestsensor();
+    prioritylist[2] = Bakkensensor.gethighestsensor();
 
-    if(prioritylist[0] == 6) {
-      Direction = prioritylist[1];
-    } else {
-      Direction = prioritylist[0];
+    for(int i = 0; i < 3; i++){
+      if(prioritylist[i] != 6) {
+        Direction = prioritylist[i];
+        break;
+      }
     }
-    
-
+    //Serial.println(Direction);
     //change direction based on sensors
     switch(Direction) {
        case 0:
-         smartcar.driveforward(50);
+         smartcar.driveforward(Speed);
+         Serial.println("forward");
       break;
       case 1:
         //smartcar.driveleft(50);
-        smartcar.driveturnleft(50);
+        smartcar.driveturnleft(Speed);
+        Serial.println("left");
       break;
       case 2:
         //smartcar.drivebackward(30);
-        smartcar.driveturnleft(50);
+        smartcar.driveturnleft(Speed);
+        Serial.println("left");
       break;
       case 3:
-        smartcar.driveturnright(50);
+        smartcar.driveturnright(Speed);
+        Serial.println("right");
       break;
 
       default:
         smartcar.Stop();
       break;
     };
+  }
+  if(Time - previousTime >= 5000 && ultrasoonflag == 1){
+   ultrasoonflag = 0;
+   previousTime = Time;
   }
 }
 
@@ -172,6 +192,7 @@ int getClearside(){
     ultrasonic.setAngle(angles[i]);
     delay(500);
     distance[i] = ultrasonic.getDistance(); 
+
   }
   ultrasonic.setAngle(90);
   if(distance[0] > distance[1]){
@@ -179,6 +200,17 @@ int getClearside(){
   }
   else {
     return 2;
+  }
+}
+
+int getDigitalsensors() {
+  if(!digitalRead(irPinLeft) || !digitalRead(irPinRight)){
+    return 2;
+  } if(!digitalRead(irPinRight)){
+    return 3;
+  }
+  else {
+    return 6;
   }
 }
 
