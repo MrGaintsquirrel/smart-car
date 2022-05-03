@@ -22,6 +22,12 @@ int prioritylist[4] = {0};
 unsigned long Time = 0;
 unsigned long previousTime = 0;
 
+unsigned long previousTimeDrive = 0;
+
+unsigned long previousTimeUltrasoon = 0;
+
+unsigned long previousTime = 0;
+
 typedef struct commandstruct{
   char commandName;
   void (*function)();
@@ -101,33 +107,33 @@ void loop() {
   // put your main code here, to run repeatedly:
   //Serial.println(ultrasonic.getDistance());
 
-  Time = millis();
-
-  
+  Time = millis(); // update Time beginning of loop
   
   //check for serial commands
   if(Serial.available() > 0){
     SerialHandler();
   }
+  
   //check if distance is less than 10 cm
    if(ultrasonic.getDistance() <= 15 && ultrasoonflag == 0){
       smartcar.Stop();
-      prioritylist[0] = getClearside();
-      ultrasoonflag = 1;
-  } if(ultrasoonflag == 1 && Time - previousTime >= 2000) {
+      prioritylist[0] = getClearside(); // get the clear side of the car and put in the first priority
+      ultrasoonflag = 1; // set the ultasoon flag to prevent double measuments
+  } if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 2000) {
      prioritylist[0] = 6;
+     previousTimeUltrasoon = Time;
   }
 
   if(getDigitalsensors() > 0) {
-    prioritylist[1] = 6;
+    prioritylist[1] = getDigitalsensors();
   } else {
-    prioritylist[1] = 0;
+    prioritylist[1] = 6;
   }
   
 
 
   //update dricetion every 150ms
-  if(Time - previousTime >= 150){
+  if(Time - previousTimeDrive >= 150){
     prioritylist[2] = Bakkensensor.gethighestsensor();
 
     for(int i = 0; i < 3; i++){
@@ -162,6 +168,7 @@ void loop() {
         smartcar.Stop();
       break;
     };
+    previousTimeDrive = Time;
   }
   if(Time - previousTime >= 5000 && ultrasoonflag == 1){
    ultrasoonflag = 0;
@@ -204,13 +211,12 @@ int getClearside(){
 }
 
 int getDigitalsensors() {
-  if(!digitalRead(irPinLeft) || !digitalRead(irPinRight)){
-    return 2;
-  } if(!digitalRead(irPinRight)){
+  if(!digitalRead(irPinLeft)){
     return 3;
+  } if(!digitalRead(irPinRight)){
+    return 1;
   }
   else {
     return 6;
   }
 }
-
