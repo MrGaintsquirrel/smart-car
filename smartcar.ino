@@ -9,6 +9,9 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
+int irPinLeft = 13;
+int irPinRight = 9;
+
 int Direction = 0;
 
 unsigned long Time = 0;
@@ -61,6 +64,9 @@ void setup() {
   pinMode(DIR_SER, OUTPUT);
   pinMode(7, OUTPUT);
 
+  pinMode(irPinLeft, INPUT);
+  pinMode(irPinRight, INPUT);
+
   digitalWrite(7, LOW);
   //smartcar.driveforward(50);
 
@@ -90,47 +96,48 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   //Serial.println(ultrasonic.getDistance());
-  if(Serial.available() > 0){
-    SerialHandler();
-    //char receive = Serial.read();
-    //Serial.println(receive);
-  }
 
   Time = millis();
+  
+  //check for serial commands
+  if(Serial.available() > 0){
+    SerialHandler();
+  }
+
   int sensorid = 5;
   
-
+  //check if distance is less than 10 cm
   if(ultrasonic.getDistance() <= 10){
     smartcar.Stop();
     sensorid = getClearside();
   }
-  
+
+  //update dricetion ecery 150ms
   if(Time - previousTime >= 150){
     Direction = Bakkensensor.gethighestsensor();
     //Serial.println(ultrasonic.getDistance());
-
     //Serial.println(Bakkensensor.getSensorValue(0));
-
+    //change direction based on sensors
     switch(Direction) {
-    case 0:
-      smartcar.driveforward(30);
-    break;
-    case 1:
-      //smartcar.driveleft(50);
-      smartcar.driveturnleft(30);
-    break;
-    case 2:
-      //smartcar.drivebackward(30);
-      smartcar.driveturnleft(30);
-    break;
-    case 3:
-      smartcar.driveturnright(30);
-    break;
+       case 0:
+         smartcar.driveforward(30);
+      break;
+      case 1:
+        //smartcar.driveleft(50);
+        smartcar.driveturnleft(30);
+      break;
+      case 2:
+        //smartcar.drivebackward(30);
+        smartcar.driveturnleft(30);
+      break;
+      case 3:
+        smartcar.driveturnright(30);
+      break;
 
-    default:
-      smartcar.Stop();
-    break;
-  };
+      default:
+        smartcar.Stop();
+      break;
+    };
   }
 }
 
