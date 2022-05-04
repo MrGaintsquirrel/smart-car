@@ -141,7 +141,7 @@ void loop() {
   if(Time - previousTimeDrive >= 150){
     
 
-    if(prioritycounter > 0 && prioritylist[1] != 6){
+    if(prioritycounter > 0 && prioritylist[0] != 6){
       prioritylist[2] = 0;
     } else {
       prioritylist[2] = Bakkensensor.gethighestsensor();
