@@ -11,6 +11,8 @@ car smartcar;
 
 int Speed = 45;
 
+int prioritycounter = 0;
+
 int irPinLeft = 13;
 int irPinRight = 9;
 
@@ -25,6 +27,8 @@ unsigned long previousTime = 0;
 unsigned long previousTimeDrive = 0;
 
 unsigned long previousTimeUltrasoon = 0;
+
+unsigned long previousTimeIrsensor = 0;
 
 typedef struct commandstruct{
   char commandName;
@@ -111,35 +115,61 @@ void loop() {
   if(Serial.available() > 0){
     SerialHandler();
   }
-  
-  //check if distance is less than 10 cm
-   if(ultrasonic.getDistance() <= 15 && ultrasoonflag == 0){
-      smartcar.Stop();
-      prioritylist[0] = getClearside(); // get the clear side of the car and put in the first priority
-      ultrasoonflag = 1; // set the ultasoon flag to prevent double measuments
-  } if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 2000) {
+  if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 2000) {
      prioritylist[0] = 6;
      previousTimeUltrasoon = Time;
+     ultrasoonflag = 0;
+     Serial.println("reseting ultrasoon flag");
   }
+  //check if distance is less than 10 cm
+   if(ultrasonic.getDistance() <= 12 && ultrasoonflag == 0){
+      smartcar.Stop();
+      prioritylist[0] = getClearside(); // get the clear side of the car and put in the first priority
+      Serial.println("checking sides");
+      ultrasoonflag = 1; // set the ultasoon flag to prevent double measuments
+      previousTimeUltrasoon = Time;
+  } 
 
   if(getDigitalsensors() > 0) {
     prioritylist[1] = getDigitalsensors();
+    previousTimeIrsensor = Time;
   } else {
     prioritylist[1] = 6;
   }
-  
-
 
   //update dricetion every 150ms
   if(Time - previousTimeDrive >= 150){
-    prioritylist[2] = Bakkensensor.gethighestsensor();
+    
+
+    if(prioritycounter > 0 && prioritylist[1] != 6){
+      prioritylist[2] = 0;
+    } else {
+      prioritylist[2] = Bakkensensor.gethighestsensor();
+      prioritycounter = 0;
+      
+    }
+    
+    
+
+    
+    Serial.println("priority 1");
+    Serial.println(prioritylist[0]);
+    Serial.println("priority 2");
+    Serial.println(prioritylist[1]);
+    Serial.println("priority 3");
+    Serial.println(prioritylist[2]);
 
     for(int i = 0; i < 3; i++){
       if(prioritylist[i] != 6) {
         Direction = prioritylist[i];
         break;
       }
+      if(i == 3){
+        prioritycounter++;
+      }
     }
+    Serial.println("Direction:");
+    Serial.println(Direction);
     //Serial.println(Direction);
     //change direction based on sensors
     switch(Direction) {
@@ -168,10 +198,6 @@ void loop() {
     };
     previousTimeDrive = Time;
   }
-  if(Time - previousTime >= 5000 && ultrasoonflag == 1){
-   ultrasoonflag = 0;
-   previousTime = Time;
-  }
 }
 
 void SerialHandler() {
@@ -190,22 +216,29 @@ void SerialHandler() {
 }
 
 int getClearside(){
-  int angles[] = {10, 180};
-  int distance[2] = {0, 0};
+  int angles[] = {90, 20, 170};
+  int distance[3] = {0, 0, 0};
+  int Maxdistance = 0;
+  int Maxsensorid = 0;
   
-  for(int i = 0; i < 2; i++){
+  for(int i = 0; i < 3; i++){
     ultrasonic.setAngle(angles[i]);
     delay(500);
     distance[i] = ultrasonic.getDistance(); 
-
   }
   ultrasonic.setAngle(90);
-  if(distance[0] > distance[1]){
-    return 3;
+
+  for(int i = 0; i < 3; i++){
+    Serial.println("distance: ");
+    Serial.println(distance[i]);
+    if(distance[i] > Maxdistance){
+      Maxsensorid = i;
+      Maxdistance = distance[i];
+    }
+  } if(Maxsensorid == 1){
+    Maxsensorid = 3;
   }
-  else {
-    return 2;
-  }
+  return Maxsensorid;
 }
 
 int getDigitalsensors() {
@@ -218,3 +251,6 @@ int getDigitalsensors() {
     return 6;
   }
 }
+
+
+
