@@ -9,7 +9,7 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
-int Speed = 45;
+int Speed = 65;
 
 int prioritycounter = 0;
 
@@ -130,28 +130,24 @@ void loop() {
       previousTimeUltrasoon = Time;
   } 
 
-  if(getDigitalsensors() > 0) {
+  if(getDigitalsensors() > 0 && Time - previousTimeIrsensor > 200) {
     prioritylist[1] = getDigitalsensors();
     previousTimeIrsensor = Time;
   } else {
     prioritylist[1] = 6;
   }
 
+  
+  prioritylist[2] = Bakkensensor.gethighestsensor();
+
   //update dricetion every 150ms
   if(Time - previousTimeDrive >= 150){
-    
-
-    if(prioritycounter > 0 && prioritylist[0] != 6){
-      prioritylist[2] = 0;
+    if(prioritycounter > 0 && prioritylist[0] == 6){
+      prioritylist[1] = 0;
     } else {
       prioritylist[2] = Bakkensensor.gethighestsensor();
-      prioritycounter = 0;
-      
+      prioritycounter = 0; 
     }
-    
-    
-
-    
     Serial.println("priority 1");
     Serial.println(prioritylist[0]);
     Serial.println("priority 2");
@@ -161,16 +157,15 @@ void loop() {
 
     for(int i = 0; i < 3; i++){
       if(prioritylist[i] != 6) {
-        Direction = prioritylist[i];
-        break;
+        Direction = prioritylist[i]; // get the first priority in the list that is not 6
+        break; // get out of for loop
       }
       if(i == 3){
-        prioritycounter++;
+        prioritycounter++; // increase priority counter
       }
     }
     Serial.println("Direction:");
     Serial.println(Direction);
-    //Serial.println(Direction);
     //change direction based on sensors
     switch(Direction) {
        case 0:

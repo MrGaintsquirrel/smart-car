@@ -1,6 +1,8 @@
 #include <arduino.h>
 #include <Servo.h>
 
+#define speedofsound (331.3*sqrt(1+(20/273.15)))/10000
+
 class ultrasonic {
  
   

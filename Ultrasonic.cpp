@@ -14,7 +14,7 @@ void ultrasonic::init(){
 }
 
 float ultrasonic::getDistance() {
-  float speedofsound = 0;
+  //float speedofsound = 0;
   
   _timedurration = 0;
   digitalWrite(_trigPin, HIGH);
@@ -22,7 +22,7 @@ float ultrasonic::getDistance() {
   digitalWrite(_trigPin, LOW);
   _timedurration = pulseIn(_echoPin, HIGH);
 
-  speedofsound = (331.3*sqrt(1+(20/273.15)))/10000; // calculate speed of sound in 20 degree temperature. devide  by 10000 to go from m/s to cm/s
+ // speedofsound = (331.3*sqrt(1+(20/273.15)))/10000; // calculate speed of sound in 20 degree temperature. devide  by 10000 to go from m/s to cm/s
   
   return _timedurration*speedofsound/2;
 }
