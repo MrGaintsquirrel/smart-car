@@ -9,7 +9,7 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
-int Speed = 71;
+int Speed = 65;
 
 int prioritycounter = 0;
 
@@ -20,6 +20,8 @@ bool ultrasoonflag = 0;
 
 int Direction = 0;
 int prioritylist[4] = {0};
+
+bool blecontrolflag = 0;
 
 unsigned long Time = 0;
 unsigned long previousTime = 0;
@@ -35,7 +37,7 @@ typedef struct commandstruct{
   void (*function)();
 };
 
-struct commandstruct command[7];
+struct commandstruct command[8];
 
 void driveforward(){
   smartcar.driveforward(50);
@@ -65,6 +67,14 @@ void Turnright(){
   smartcar.driveturnright(50);
 }
 
+void controlmodeselect(){
+  if(blecontrolflag == 1){
+    blecontrolflag = 0;
+  } else {
+    blecontrolflag = 1;
+  }
+  Serial.println("change mode");
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -103,6 +113,9 @@ void setup() {
 
   command[6].commandName = 'D';
   command[6].function = &Turnright;
+
+  command[7].commandName = 'G';
+  command[7].function = &controlmodeselect;
 }
 
 void loop() {
@@ -115,6 +128,7 @@ void loop() {
   if(Serial.available() > 0){
     SerialHandler();
   }
+  if(blecontrolflag == 0){
   if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 1750) {
      prioritylist[0] = 6;
      previousTimeUltrasoon = Time;
@@ -199,6 +213,7 @@ void loop() {
     };
     previousTimeDrive = Time;
   }
+  }
 }
 
 void SerialHandler() {
@@ -208,7 +223,7 @@ void SerialHandler() {
 
   Serial.println((char)receive);
   
-  for(int i = 0; i <= 6; i++){
+  for(int i = 0; i <= 7; i++){
     if(strcmp((char)receive, command[i].commandName) == 0){
       (*command[i].function)();
       //break;
