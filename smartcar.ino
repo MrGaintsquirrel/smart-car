@@ -9,7 +9,7 @@ ultrasonic ultrasonic(A0, A1, 10);
 
 car smartcar;
 
-int Speed = 65;
+int Speed = 71;
 
 int prioritycounter = 0;
 
@@ -115,7 +115,7 @@ void loop() {
   if(Serial.available() > 0){
     SerialHandler();
   }
-  if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 2000) {
+  if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 1750) {
      prioritylist[0] = 6;
      previousTimeUltrasoon = Time;
      ultrasoonflag = 0;
@@ -186,6 +186,12 @@ void loop() {
         smartcar.driveturnright(Speed);
         Serial.println("right");
       break;
+      case 4:
+        smartcar.driveright(Speed);
+        break;
+      case 5:
+        smartcar.driveleft(Speed);
+        break;
 
       default:
         smartcar.Stop();
@@ -231,7 +237,9 @@ int getClearside(){
       Maxdistance = distance[i];
     }
   } if(Maxsensorid == 1){
-    Maxsensorid = 3;
+    Maxsensorid = 4;
+  } if(Maxsensorid == 2){
+    Maxsensorid = 2;
   }
   return Maxsensorid;
 }
