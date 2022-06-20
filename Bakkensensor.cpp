@@ -11,7 +11,13 @@ int bakkensensor::gethighestsensor(){
           max_id = i; // Store sensor id in return variable
         }
       }
+      if(max_id == 0){
+        return 2;
+      } if(max_id == 3){
+        return 0;
+      } else {
       return max_id;
+      }
 }
 
 int bakkensensor::getSensorValue(int sensorId) {

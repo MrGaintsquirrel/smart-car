@@ -154,7 +154,7 @@ void loop() {
   
   prioritylist[2] = Bakkensensor.gethighestsensor();
 
-  //update dricetion every 150ms
+  //update direction every 150ms
   if(Time - previousTimeDrive >= 150){
     if(prioritycounter > 0 && prioritylist[0] == 6){
       prioritylist[1] = 0;
@@ -269,6 +269,3 @@ int getDigitalsensors() {
     return 6;
   }
 }
-
-
-
