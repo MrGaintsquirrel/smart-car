@@ -128,7 +128,6 @@ void loop() {
   if(Serial.available() > 0){
     SerialHandler();
   }
-  if(blecontrolflag == 0){
   if(ultrasoonflag == 1 && Time - previousTimeUltrasoon >= 1750) {
      prioritylist[0] = 6;
      previousTimeUltrasoon = Time;
@@ -151,15 +150,22 @@ void loop() {
     prioritylist[1] = 6;
   }
 
-  
-  prioritylist[2] = Bakkensensor.gethighestsensor();
+  if(blecontrolflag == 1){
+    prioritylist[2] = Bakkensensor.gethighestsensor();
+  } else {
+    prioritylist[2] = Bakkensensor.gethighestsensor_run();
+  }
 
   //update direction every 150ms
   if(Time - previousTimeDrive >= 150){
     if(prioritycounter > 0 && prioritylist[0] == 6){
       prioritylist[1] = 0;
     } else {
+      if(blecontrolflag == 1){
       prioritylist[2] = Bakkensensor.gethighestsensor();
+      } else {
+        prioritylist[2] = Bakkensensor.gethighestsensor_run();
+      }
       prioritycounter = 0; 
     }
     Serial.println("priority 1");
@@ -212,7 +218,6 @@ void loop() {
       break;
     };
     previousTimeDrive = Time;
-  }
   }
 }
 

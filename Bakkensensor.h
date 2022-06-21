@@ -6,6 +6,7 @@ class bakkensensor {
   public:
   
   int gethighestsensor(); //Returns the sensor id with the highest value
+  int gethighestsensor_run();
   int getSensorValue(int sensorId);
 
   private:
